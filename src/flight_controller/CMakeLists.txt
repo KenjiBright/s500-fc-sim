@@ -42,7 +42,7 @@ ament_target_dependencies(flight_controller_node
 target_link_libraries(flight_controller_node ${YAML_CPP_LIBRARIES})
 
 install(TARGETS flight_controller_node DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY ../../launch DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY ../../config DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY ../../urdf DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY ../../worlds DESTINATION share/${PROJECT_NAME})
