@@ -1,0 +1,103 @@
+# S500 Flight Controller Configuration
+
+drone:
+  mass: 1.1
+  wheelbase: 0.5
+  arm_length: 0.25
+  inertia:
+    ixx: 0.0087
+    iyy: 0.0087
+    izz: 0.0144
+
+motors:
+  count: 4
+  model: "DJI 2312 800KV"
+  positions:
+    fr: [0.1768, 0.1768, 0]
+    fl: [0.1768, -0.1768, 0]
+    rr: [-0.1768, -0.1768, 0]
+    rl: [-0.1768, 0.1768, 0]
+  directions:
+    fr: 1
+    fl: -1
+    rr: -1
+    rl: 1
+  max_rpm: 6400
+  time_constant: 0.125
+  esc:
+    type: "Mamba F55/F65"
+    refresh_rate: 32000
+    min_pwm: 1000
+    max_pwm: 2000
+  propeller:
+    size: "10x5"
+    radius: 0.127
+
+thrust:
+  max_thrust_per_motor: 2.8
+  hover_thrust_per_motor: 1.375
+  pwm_thrust_curve:
+    1000: 0.0
+    1500: 5.4
+    2000: 10.8
+
+pid:
+  roll:
+    angle:
+      kp: 4.5
+      ki: 0.0
+      kd: 0.0
+      imax: 100.0
+    rate:
+      kp: 0.15
+      ki: 0.08
+      kd: 0.004
+      imax: 100.0
+  pitch:
+    angle:
+      kp: 4.5
+      ki: 0.0
+      kd: 0.0
+      imax: 100.0
+    rate:
+      kp: 0.15
+      ki: 0.08
+      kd: 0.004
+      imax: 100.0
+  yaw:
+    angle:
+      kp: 4.5
+      ki: 0.05
+      kd: 0.0
+      imax: 100.0
+    rate:
+      kp: 0.3
+      ki: 0.05
+      kd: 0.0
+      imax: 100.0
+
+limits:
+  max_angle_degrees: 45.0
+  max_yaw_rate: 360.0
+  max_climb_rate: 2.0
+  max_descent_rate: 1.5
+
+sensors:
+  imu:
+    update_rate: 100
+    gyro_noise_std: 0.02
+    accel_noise_std: 0.05
+
+communication:
+  rc_input:
+    type: "serial"
+    port: "/dev/ttyUSB0"
+    baudrate: 115200
+    protocol: "CRSF"
+    update_rate: 100
+  telemetry:
+    type: "serial"
+    port: "/dev/ttyUSB1"
+    baudrate: 115200
+    protocol: "MAVLink"
+    update_rate: 50
