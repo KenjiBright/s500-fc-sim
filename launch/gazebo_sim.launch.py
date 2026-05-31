@@ -42,10 +42,10 @@ def generate_launch_description():
         executable='spawn_entity.py',
         arguments=[
             '-entity', 's500_quadcopter',
-            '-file', os.path.join(pkg_share, 'urdf', 's500_quadcopter.urdf'),
+            '-file', os.path.join(pkg_share, 'urdf', 's500_quadcopter_expanded.urdf'),
             '-x', '0.0',
             '-y', '0.0',
-            '-z', '0.5'
+            '-z', '1.0'
         ],
         output='screen'
     )
@@ -54,7 +54,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         arguments=[
-            os.path.join(pkg_share, 'urdf', 's500_quadcopter.urdf')
+            os.path.join(pkg_share, 'urdf', 's500_quadcopter_expanded.urdf')
         ],
         parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
         output='screen'
