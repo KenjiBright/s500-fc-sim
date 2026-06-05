@@ -4,7 +4,7 @@ namespace flight_controller {
 
 PIDController::PIDController()
     : error_prev_(0.0), integral_(0.0), derivative_(0.0), output_(0.0),
-      deriv_lpf_alpha_(0.0) {
+      deriv_lpf_alpha_(0.0), deriv_filtered_(0.0) {
     params_.kp = 0.0;
     params_.ki = 0.0;
     params_.kd = 0.0;
@@ -15,7 +15,7 @@ PIDController::PIDController()
 
 PIDController::PIDController(const Params& params)
     : params_(params), error_prev_(0.0), integral_(0.0), 
-      derivative_(0.0), output_(0.0) {
+      derivative_(0.0), output_(0.0), deriv_filtered_(0.0) {
     double wc = 2.0 * M_PI * params_.deriv_lpf_freq * params_.dt;
     deriv_lpf_alpha_ = wc / (wc + 1.0);
 }
@@ -46,6 +46,7 @@ void PIDController::reset() {
     integral_ = 0.0;
     derivative_ = 0.0;
     output_ = 0.0;
+    deriv_filtered_ = 0.0;
 }
 
 void PIDController::set_params(const Params& params) {
@@ -59,9 +60,8 @@ void PIDController::set_imax(double imax) {
 }
 
 double PIDController::apply_deriv_lpf(double deriv) {
-    static double deriv_filtered = 0.0;
-    deriv_filtered = deriv_lpf_alpha_ * deriv + (1.0 - deriv_lpf_alpha_) * deriv_filtered;
-    return deriv_filtered;
+    deriv_filtered_ = deriv_lpf_alpha_ * deriv + (1.0 - deriv_lpf_alpha_) * deriv_filtered_;
+    return deriv_filtered_;
 }
 
 }  // namespace flight_controller

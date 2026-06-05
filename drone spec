@@ -1,0 +1,8 @@
+Drone specification: 
+	1) FC: STM32F405
+	2) ESC: Mamba F55 or F65
+	3) Motor: DJI Phantom 3 2312 800KV
+	4) Companion computer: Rasberry Pi 5 
+	5) Frame: S500
+	6) Pi 5 -> FC using UART
+	7) TX ELRS controller -> RX ELRS -> FC

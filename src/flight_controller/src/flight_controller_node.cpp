@@ -72,7 +72,17 @@ void FlightControllerNode::imu_callback(const sensor_msgs::msg::Imu::SharedPtr m
     imu_data.accel_y = msg->linear_acceleration.y;
     imu_data.accel_z = msg->linear_acceleration.z;
     
-    const double dt = 1.0 / 100.0;
+    rclcpp::Time msg_time = msg->header.stamp;
+    double dt = 1.0 / 100.0;
+    if (imu_time_initialized_) {
+        double computed_dt = (msg_time - last_imu_time_).seconds();
+        if (computed_dt > 0.0 && computed_dt < 0.1) {
+            dt = computed_dt;
+        }
+    }
+    last_imu_time_ = msg_time;
+    imu_time_initialized_ = true;
+
     imu_processor_->update(imu_data, dt);
     
     state_.attitude = imu_processor_->get_attitude();
@@ -96,17 +106,17 @@ void FlightControllerNode::control_loop() {
     double dt = 1.0 / config_.control_loop_rate;
     
     if (config_.stabilize_mode) {
-        double roll_rate_error = pid_roll_angle_.update(state_.target_roll - state_.attitude.roll, dt);
-        double pitch_rate_error = pid_pitch_angle_.update(state_.target_pitch - state_.attitude.pitch, dt);
+        double roll_rate_cmd = pid_roll_angle_.update(state_.target_roll - state_.attitude.roll, dt);
+        double pitch_rate_cmd = pid_pitch_angle_.update(state_.target_pitch - state_.attitude.pitch, dt);
         
-        pid_roll_rate_.update(roll_rate_error - state_.gyro[0], dt);
-        pid_pitch_rate_.update(pitch_rate_error - state_.gyro[1], dt);
-        pid_yaw_rate_.update(state_.target_yaw_rate - state_.gyro[2], dt);
+        double roll_out  = pid_roll_rate_.update(roll_rate_cmd - state_.gyro[0], dt);
+        double pitch_out = pid_pitch_rate_.update(pitch_rate_cmd - state_.gyro[1], dt);
+        double yaw_out   = pid_yaw_rate_.update(state_.target_yaw_rate - state_.gyro[2], dt);
         
         AttitudeSetpoints setpoints;
-        setpoints.roll_rad = state_.target_roll;
-        setpoints.pitch_rad = state_.target_pitch;
-        setpoints.yaw_rate_rad = state_.target_yaw_rate;
+        setpoints.roll_rad = roll_out;
+        setpoints.pitch_rad = pitch_out;
+        setpoints.yaw_rate_rad = yaw_out;
         setpoints.throttle = state_.throttle;
         
         MotorCommands motor_cmd = motor_mixer_->mix(

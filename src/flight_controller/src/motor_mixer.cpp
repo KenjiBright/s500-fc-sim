@@ -63,10 +63,14 @@ std::array<double, 4> MotorMixer::calculate_motor_outputs(
     
     std::array<double, 4> outputs;
     
-    outputs[0] = throttle + roll - pitch - yaw;
-    outputs[1] = throttle - roll - pitch + yaw;
-    outputs[2] = throttle - roll + pitch + yaw;
-    outputs[3] = throttle + roll + pitch - yaw;
+    // X-frame mixing: FR(CW), FL(CCW), RR(CCW), RL(CW)
+    // +roll = roll right (left side up): FL/RL increase, FR/RR decrease
+    // +pitch = nose up: RR/RL increase, FR/FL decrease
+    // +yaw = CCW from above: CW motors (FR,RL) increase, CCW motors (FL,RR) decrease
+    outputs[0] = throttle - roll - pitch + yaw;  // FR
+    outputs[1] = throttle + roll - pitch - yaw;  // FL
+    outputs[2] = throttle - roll + pitch - yaw;  // RR
+    outputs[3] = throttle + roll + pitch + yaw;  // RL
     
     double max_output = 0.0;
     for (int i = 0; i < 4; ++i) {

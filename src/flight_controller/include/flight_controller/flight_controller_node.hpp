@@ -53,6 +53,9 @@ private:
     void cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
     void control_loop();
     void load_config();
+
+    rclcpp::Time last_imu_time_;
+    bool imu_time_initialized_ = false;
 };
 
 }  // namespace flight_controller

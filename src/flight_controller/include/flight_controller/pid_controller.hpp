@@ -35,6 +35,7 @@ private:
     double derivative_;
     double output_;
     double deriv_lpf_alpha_;
+    double deriv_filtered_;
     
     double apply_deriv_lpf(double deriv);
 };

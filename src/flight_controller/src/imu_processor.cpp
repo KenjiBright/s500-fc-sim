@@ -55,7 +55,7 @@ void IMUProcessor::update(const IMUData& imu_data, double dt) {
     
     quaternion_ = filtered_quat;
     attitude_ = quaternion_to_euler(quaternion_);
-    last_imu_data_ = imu_data;
+    last_imu_data_ = corrected_imu;
 }
 
 EulerAngles IMUProcessor::compute_accel_attitude(const IMUData& imu_data) {
